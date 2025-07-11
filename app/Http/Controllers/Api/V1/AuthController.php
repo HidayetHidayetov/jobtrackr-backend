@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Http\Request;
+use App\Traits\ApiResponse;
 
 class AuthController extends Controller
 {
@@ -22,11 +23,10 @@ class AuthController extends Controller
     {
         $user = $this->authService->register($request->validated());
         $token = $user->createToken('api_token')->plainTextToken;
-
-        return response()->json([
+        return $this->successResponse([
             'user' => $user,
             'token' => $token,
-        ], 201);
+        ], 'User registered successfully', 201);
     }
 
     public function login(LoginRequest $request): JsonResponse
@@ -34,14 +34,12 @@ class AuthController extends Controller
         try {
             $user = $this->authService->login($request->validated());
             $token = $user->createToken('api_token')->plainTextToken;
-            return response()->json([
+            return $this->successResponse([
                 'user' => $user,
                 'token' => $token,
-            ]);
+            ], 'Login successful');
         } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Invalid credentials.'
-            ], 401);
+            return $this->errorResponse('Invalid credentials', 401);
         }
     }
 
@@ -50,8 +48,8 @@ class AuthController extends Controller
         $user = $request->user();
         if ($user) {
             $this->authService->logout($user);
-            return response()->json(['message' => 'Logged out successfully.']);
+            return $this->successResponse(null, 'Logged out successfully');
         }
-        return response()->json(['message' => 'Not authenticated.'], 401);
+        return $this->errorResponse('Not authenticated', 401);
     }
 }
