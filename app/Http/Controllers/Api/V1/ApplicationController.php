@@ -9,6 +9,7 @@ use App\Http\Requests\StoreApplicationRequest;
 use App\Http\Requests\UpdateApplicationRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use App\Traits\ApiResponse;
 
 class ApplicationController extends Controller
 {
@@ -22,71 +23,52 @@ class ApplicationController extends Controller
     public function index(Request $request): JsonResponse
     {
         $applications = $this->service->list($request->user());
-        return response()->json([
-            'success' => true,
-            'message' => 'Applications fetched successfully',
-            'data' => ApplicationResource::collection($applications),
-        ]);
+        return $this->successResponse(
+            ApplicationResource::collection($applications),
+            'Applications fetched successfully'
+        );
     }
 
     public function store(StoreApplicationRequest $request): JsonResponse
     {
         $application = $this->service->create($request->validated(), $request->user());
-        return response()->json([
-            'success' => true,
-            'message' => 'Application created successfully',
-            'data' => new ApplicationResource($application),
-        ], 201);
+        return $this->successResponse(
+            new ApplicationResource($application),
+            'Application created successfully',
+            201
+        );
     }
 
     public function show($id, Request $request): JsonResponse
     {
         $application = $this->service->show($id, $request->user());
         if (!$application) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Application not found',
-                'data' => null,
-            ], 404);
+            return $this->errorResponse('Application not found', 404);
         }
-        return response()->json([
-            'success' => true,
-            'message' => 'Application fetched successfully',
-            'data' => new ApplicationResource($application),
-        ]);
+        return $this->successResponse(
+            new ApplicationResource($application),
+            'Application fetched successfully'
+        );
     }
 
     public function update($id, UpdateApplicationRequest $request): JsonResponse
     {
         $application = $this->service->update($id, $request->validated(), $request->user());
         if (!$application) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Application not found or not authorized',
-                'data' => null,
-            ], 404);
+            return $this->errorResponse('Application not found or not authorized', 404);
         }
-        return response()->json([
-            'success' => true,
-            'message' => 'Application updated successfully',
-            'data' => new ApplicationResource($application),
-        ]);
+        return $this->successResponse(
+            new ApplicationResource($application),
+            'Application updated successfully'
+        );
     }
 
     public function destroy($id, Request $request): JsonResponse
     {
         $deleted = $this->service->delete($id, $request->user());
         if (!$deleted) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Application not found or not authorized',
-                'data' => null,
-            ], 404);
+            return $this->errorResponse('Application not found or not authorized', 404);
         }
-        return response()->json([
-            'success' => true,
-            'message' => 'Application deleted successfully',
-            'data' => null,
-        ]);
+        return $this->successResponse(null, 'Application deleted successfully');
     }
 }
