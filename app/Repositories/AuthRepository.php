@@ -16,5 +16,16 @@ class AuthRepository
     {
         return User::create($data);
     }
+
+    /**
+     * Find a user by email.
+     *
+     * @param string $email
+     * @return User|null
+     */
+    public function findByEmail(string $email): ?User
+    {
+        return User::where('email', $email)->first();
+    }
     // User məlumatlarının saxlanması və əldə olunması üçün metodlar burada olacaq
 } 

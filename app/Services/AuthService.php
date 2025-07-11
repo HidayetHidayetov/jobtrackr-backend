@@ -27,5 +27,21 @@ class AuthService
         return $this->authRepository->createUser($data);
     }
 
+    /**
+     * Attempt to log in a user.
+     *
+     * @param array $credentials
+     * @return User
+     * @throws \Exception
+     */
+    public function login(array $credentials): User
+    {
+        $user = $this->authRepository->findByEmail($credentials['email']);
+        if (!$user || !\Illuminate\Support\Facades\Hash::check($credentials['password'], $user->password)) {
+            throw new \Exception('Invalid credentials.');
+        }
+        return $user;
+    }
+
     // Register, login, logout və user info üçün metodlar burada olacaq
 } 
