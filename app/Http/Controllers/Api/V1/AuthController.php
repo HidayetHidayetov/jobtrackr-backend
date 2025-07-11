@@ -7,6 +7,7 @@ use App\Http\Requests\RegisterRequest;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
+use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
@@ -42,5 +43,15 @@ class AuthController extends Controller
                 'message' => 'Invalid credentials.'
             ], 401);
         }
+    }
+
+    public function logout(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        if ($user) {
+            $this->authService->logout($user);
+            return response()->json(['message' => 'Logged out successfully.']);
+        }
+        return response()->json(['message' => 'Not authenticated.'], 401);
     }
 }

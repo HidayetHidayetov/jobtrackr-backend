@@ -43,5 +43,16 @@ class AuthService
         return $user;
     }
 
+    /**
+     * Logout the current user by revoking the current access token.
+     *
+     * @param \App\Models\User $user
+     * @return void
+     */
+    public function logout(User $user): void
+    {
+        $user->currentAccessToken()?->delete();
+    }
+
     // Register, login, logout və user info üçün metodlar burada olacaq
 } 
