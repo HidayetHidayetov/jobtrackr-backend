@@ -13,6 +13,8 @@ use App\Traits\ApiResponse;
 
 class ApplicationController extends Controller
 {
+    use ApiResponse;
+    
     protected ApplicationService $service;
 
     public function __construct(ApplicationService $service)
