@@ -17,4 +17,6 @@ Route::prefix('v1')->group(function () {
     Route::middleware('auth:sanctum')->apiResource('applications', \App\Http\Controllers\Api\V1\ApplicationController::class)->only([
         'index', 'store', 'show', 'update', 'destroy'
     ]);
+
+    Route::middleware('auth:sanctum')->get('stats', \App\Http\Controllers\Api\V1\StatsController::class . '@index');
 });
