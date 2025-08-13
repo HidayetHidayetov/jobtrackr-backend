@@ -2,8 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\{Factories\HasFactory, Model};
 use App\Enums\ApplicationStatusEnum;
 
 class Application extends Model
@@ -27,7 +26,7 @@ class Application extends Model
         'status' => ApplicationStatusEnum::class,
     ];
 
-    public function user()
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class);
     }

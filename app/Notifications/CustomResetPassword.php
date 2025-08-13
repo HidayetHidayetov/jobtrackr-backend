@@ -2,26 +2,25 @@
 
 namespace App\Notifications;
 
-use Illuminate\Notifications\Notification;
-use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\{Notification, Messages\MailMessage};
 
 class CustomResetPassword extends Notification
 {
-    public $token;
-    public $url;
+    public string $token;
+    public string $url;
 
     public function __construct($token, $url)
     {
         $this->token = $token;
-        $this->url = $url;
+        $this->url   = $url;
     }
 
-    public function via($notifiable)
+    public function via($notifiable): array
     {
         return ['mail'];
     }
 
-    public function toMail($notifiable)
+    public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)
             ->subject('Reset Password Notification')
